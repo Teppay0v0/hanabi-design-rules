@@ -323,7 +323,7 @@ fitFrames();
     {key:'contrast',name:'寒暖の対照',rec:false,dsc:'反対側を落ち着かせて。',hex:hslToHex(h+180,clamp(s*0.72,34,66),clamp(l,32,48))},
     {key:'pop',name:'華やかな差し色',rec:false,dsc:'離れた色を鮮やかに。',hex:hslToHex(h+150,clamp(s*1.05,58,86),clamp(l*1.15,48,62))}
   ];}
-  function washOf(mainHex){var m=hsl(mainHex);return hslToHex(m.h,clamp(m.s,14,24),96.2);}
+  function washOf(mainHex){var m=hsl(mainHex);return hslToHex(m.h,clamp(m.s,9,15),97.7);}
   function normalizeHex(h){if(!h)return null;h=h.trim().replace(/^#/,'');if(/^[0-9a-fA-F]{3}$/.test(h))h=h.split('').map(function(c){return c+c;}).join('');if(!/^[0-9a-fA-F]{6}$/.test(h))return null;return '#'+h.toLowerCase();}
 
   var PRESETS=[
