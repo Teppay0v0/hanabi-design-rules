@@ -135,6 +135,9 @@ nav.top .links a.em { color: var(--ink); font-weight: 700; box-shadow: inset 0 -
 
 /* 全画面ステートメント */
 .statement { min-height: 100vh; display: flex; align-items: center; }
+/* 全ページ比較プレビュー（?embed）では 100vh の余白を詰めて、他ページと同じ土俵で見せる */
+html.embed .statement { min-height: auto; padding: 92px 0; }
+html.embed .close { padding: 104px 0; }
 .bigline {
   font-weight: 800; letter-spacing: -.02em; line-height: 1.25;
   font-size: clamp(30px, 5.4vw, 100px);
@@ -423,6 +426,9 @@ footer { padding: 40px 0; text-align: center; color: var(--faint); font-size: 12
 <script>
 (function(){
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  /* 全ページ比較プレビューに埋め込まれたとき（?embed）は全画面ステートメントの余白を詰める */
+  if (location.search.indexOf('embed') !== -1) document.documentElement.classList.add('embed');
 
   /* プログレスバー */
   var bar = document.getElementById('progress');
