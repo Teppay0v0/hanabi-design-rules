@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>hanabi-design-rules — Claude Code デザインスキル</title>
+<meta name="description" content="Claude Code の出力を「AIっぽい詰まったデザイン」にしないためのスキル。ワンコマンドでインストール。">
+<style>
+:root {
+  --ink:         #141414;
+  --gray:        #6b6b6b;
+  --faint:       #9a9a9a;
+  --line:        #e6e6e6;
+  --line-strong: #111;
+  --accent:      #06c755;
+  --bg:          #ffffff;
+  --soft:        #f6f6f6;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN",
+               "Hiragino Sans", "Noto Sans JP", Meiryo, sans-serif;
+  color: var(--ink); background: var(--bg);
+  font-size: 17px; line-height: 1.9;
+  font-feature-settings: "palt";
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1280px; margin: 0 auto; padding: 0 clamp(24px, 4vw, 64px); }
+section { padding: 88px 0; border-bottom: 1px solid var(--line); }
+section:last-of-type { border-bottom: none; }
+
+/* Hero */
+.hero { padding: 110px 0 90px; border-bottom: 1px solid var(--line); }
+.hero .kicker { font-size: 14px; letter-spacing: .3em; color: var(--faint); font-weight: 700; margin-bottom: 30px; }
+.hero h1 { font-size: clamp(34px, 5.5vw, 84px); font-weight: 800; letter-spacing: -.01em; line-height: 1.15; font-family: Inter, "Helvetica Neue", sans-serif; }
+.hero h1 u { text-decoration: none; box-shadow: inset 0 -.18em 0 var(--accent); }
+.hero .lead { margin-top: 32px; font-size: clamp(16px, 1.4vw, 21px); color: var(--gray); max-width: 820px; }
+.hero .links { margin-top: 48px; display: flex; gap: 40px; flex-wrap: wrap; }
+.hero .links a { color: var(--ink); text-decoration: none; font-weight: 800; font-size: 17px; box-shadow: inset 0 -2px 0 var(--ink); padding-bottom: 3px; }
+.hero .links a:hover { box-shadow: inset 0 -2px 0 var(--accent); }
+
+/* 見出し */
+.sec-title {
+  font-size: clamp(26px, 2.8vw, 44px); font-weight: 800; line-height: 1.35;
+  padding-left: 20px; position: relative; margin-bottom: 14px;
+}
+.sec-title::before {
+  content: ""; position: absolute; left: 0; top: .18em; bottom: .18em;
+  width: 7px; background: var(--accent);
+}
+.sec-lead { color: var(--gray); font-size: clamp(15px, 1.2vw, 19px); margin-bottom: 44px; }
+
+/* install */
+.cmd {
+  border: 1.5px solid var(--line-strong); background: var(--soft);
+  display: flex; align-items: stretch; max-width: 940px;
+}
+.cmd code {
+  flex: 1; font-family: "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: clamp(12px, 1.15vw, 15.5px); padding: 22px 24px;
+  overflow-x: auto; white-space: nowrap; line-height: 1.6; color: var(--ink);
+}
+.cmd button {
+  border: none; border-left: 1.5px solid var(--line-strong);
+  background: var(--ink); color: #fff; font-family: inherit;
+  font-size: 14px; font-weight: 800; letter-spacing: .1em;
+  padding: 0 28px; cursor: pointer; flex-shrink: 0;
+}
+.cmd button:hover { background: #000; }
+.cmd button.done { background: var(--accent); }
+.install-note { margin-top: 26px; color: var(--gray); font-size: 15.5px; max-width: 940px; }
+.install-note b { color: var(--ink); }
+.usage { margin-top: 40px; border: 1px solid var(--line); max-width: 940px; padding: 30px 32px; }
+.usage .label { font-size: 12.5px; letter-spacing: .24em; font-weight: 800; color: var(--faint); margin-bottom: 14px; }
+.usage p { font-size: 16px; color: #333; }
+.usage p b { box-shadow: inset 0 -.4em 0 rgba(6,199,85,.25); font-weight: 800; }
+
+/* rules table */
+.rules { border-top: 1px solid var(--line); max-width: 940px; }
+.rules div {
+  display: grid; grid-template-columns: 1fr 1.3fr; gap: 24px;
+  border-bottom: 1px solid var(--line); padding: 16px 4px; font-size: 15.5px;
+}
+.rules div s { color: var(--faint); text-decoration: line-through; }
+.rules div em { font-style: normal; color: var(--ink); font-weight: 700; }
+.rules .head { font-size: 12.5px; letter-spacing: .2em; font-weight: 800; color: var(--faint); border-bottom: 1px solid var(--line-strong); }
+@media (max-width: 600px) { .rules div { grid-template-columns: 1fr; gap: 2px; } }
+
+/* 比較フレーム */
+.duo { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(18px, 2.5vw, 40px); }
+@media (max-width: 860px) { .duo { grid-template-columns: 1fr; } }
+.frame { border: 1px solid var(--line); background: #fff; }
+.frame-head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 22px; border-bottom: 1px solid var(--line);
+}
+.frame-head .tag { font-size: 13px; font-weight: 800; letter-spacing: .28em; color: var(--faint); }
+.frame-head .tag.after { color: var(--accent); }
+.frame-head .px { font-size: 13px; color: var(--faint); letter-spacing: .06em; }
+.viewport { position: relative; overflow: hidden; background: var(--soft); }
+.viewport iframe {
+  position: absolute; top: 0; left: 0; width: 1440px; border: 0;
+  transform-origin: 0 0; background: #fff;
+}
+.viewport.static iframe { pointer-events: none; }
+.hint { margin-top: 18px; font-size: 13.5px; color: var(--faint); }
+
+footer { padding: 52px 0; text-align: center; color: var(--faint); font-size: 13px; letter-spacing: .08em; }
+footer a { color: var(--gray); }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kicker">CLAUDE CODE SKILL</div>
+    <h1>hanabi-<br><u>design-rules</u></h1>
+    <p class="lead">Claude Code でデザインを作るとき「なんかAIっぽい」「詰まってる」「カラフルすぎる」を防ぐスキルです。インストールしておくだけで、LP・HP・スライドの出力が変わります。根本の考え方は、引くこと。</p>
+    <div class="links">
+      <a href="#install">ワンコマンドでインストール →</a>
+      <a href="#demo">Before / After を見る →</a>
+      <a href="https://github.com/Teppay0v0/hanabi-design-rules">GitHub →</a>
+    </div>
+  </div>
+</header>
+
+<section id="install">
+  <div class="wrap">
+    <h2 class="sec-title">ワンコマンドでインストール</h2>
+    <p class="sec-lead">ターミナルにこれを貼るだけです。<code style="font-size:.9em;">~/.claude/skills/</code> に配置されます。</p>
+    <div class="cmd">
+      <code id="install-cmd">curl -fsSL https://raw.githubusercontent.com/Teppay0v0/hanabi-design-rules/main/install.sh | bash</code>
+      <button id="copy-btn" onclick="copyCmd()">COPY</button>
+    </div>
+    <p class="install-note">更新したいときも、<b>同じコマンドをもう一度実行するだけ</b>です。アンインストールは <code style="font-size:.9em;">rm -rf ~/.claude/skills/hanabi-design-rules</code>。</p>
+    <div class="usage">
+      <div class="label">USAGE</div>
+      <p>インストール後は、Claude Code に<b>普通に話しかけるだけ</b>。「このサービスのLPを作って」「会社紹介のスライドを作って」— Claude が自動でこのスキルを読み込み、ルールに沿ったデザインを出力します。</p>
+    </div>
+  </div>
+</section>
+
+<section id="rules">
+  <div class="wrap">
+    <h2 class="sec-title">何が変わるのか</h2>
+    <p class="sec-lead">AIのデフォルトでやりがちな表現を禁止し、代わりの手段を指定します。</p>
+    <div class="rules">
+      <div class="head"><span>禁止</span><span>代わりに</span></div>
+      <div><s>絵文字</s><em>モノラインSVGアイコン</em></div>
+      <div><s>イタリック</s><em>サイズ・ウェイト・字間で強調</em></div>
+      <div><s>ベタ塗り背景・グラデーション</s><em>白基調＋細罫（1px）のみ</em></div>
+      <div><s>ドロップシャドウ</s><em>細罫で奥行きを表現</em></div>
+      <div><s>角丸カード</s><em>直角のみ</em></div>
+      <div><s>3色以上のパレット</s><em>白＋アクセント1色のみ</em></div>
+      <div><s>大型CTAボタン</s><em>テキストリンクのみ</em></div>
+      <div><s>ストック写真</s><em>タイポグラフィ・数字・線で構成</em></div>
+    </div>
+  </div>
+</section>
+
+<section id="demo">
+  <div class="wrap">
+    <h2 class="sec-title">デスクトップ・ファーストビュー</h2>
+    <p class="sec-lead">丸ボタン2つ＋角丸チャット枠 → 大型タイポ＋アクセント下線＋テキストリンクCTA＋細罫チャット枠。</p>
+    <div class="duo">
+      <div class="frame">
+        <div class="frame-head"><span class="tag">BEFORE</span><span class="px">1440px</span></div>
+        <div class="viewport static" data-mode="fv" data-design-h="880">
+          <iframe src="before.html" loading="lazy" scrolling="no" title="BEFORE ファーストビュー"></iframe>
+        </div>
+      </div>
+      <div class="frame">
+        <div class="frame-head"><span class="tag after">AFTER</span><span class="px">1440px</span></div>
+        <div class="viewport static" data-mode="fv" data-design-h="880">
+          <iframe src="after.html" loading="lazy" scrolling="no" title="AFTER ファーストビュー"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="demo-full">
+  <div class="wrap">
+    <h2 class="sec-title">デスクトップ・全ページ</h2>
+    <p class="sec-lead">枠内をスクロールすると全セクションを見比べられます。</p>
+    <div class="duo">
+      <div class="frame">
+        <div class="frame-head"><span class="tag">BEFORE</span><span class="px">全長スクロール</span></div>
+        <div class="viewport" data-mode="full" data-box-h="680">
+          <iframe src="before.html" loading="lazy" title="BEFORE 全ページ"></iframe>
+        </div>
+      </div>
+      <div class="frame">
+        <div class="frame-head"><span class="tag after">AFTER</span><span class="px">全長スクロール</span></div>
+        <div class="viewport" data-mode="full" data-box-h="680">
+          <iframe src="after.html" loading="lazy" title="AFTER 全ページ"></iframe>
+        </div>
+      </div>
+    </div>
+    <p class="hint">各ページを単体で開く： <a href="before.html" style="color:var(--gray);">BEFORE</a> ／ <a href="after.html" style="color:var(--gray);">AFTER</a></p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    hanabi-design-rules — <a href="https://github.com/Teppay0v0/hanabi-design-rules">github.com/Teppay0v0/hanabi-design-rules</a>
+  </div>
+</footer>
+
+<script>
+/* コマンドコピー */
+function copyCmd(){
+  var text = document.getElementById('install-cmd').textContent;
+  var btn = document.getElementById('copy-btn');
+  function done(){
+    btn.textContent = 'COPIED';
+    btn.classList.add('done');
+    setTimeout(function(){ btn.textContent = 'COPY'; btn.classList.remove('done'); }, 1800);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done);
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta); done();
+  }
+}
+
+/* iframe を 1440px デザインのまま枠にフィットさせる */
+function fitFrames(){
+  document.querySelectorAll('.viewport').forEach(function(v){
+    var ifr = v.querySelector('iframe');
+    var scale = v.clientWidth / 1440;
+    ifr.style.transform = 'scale(' + scale + ')';
+    if (v.dataset.mode === 'fv') {
+      /* ファーストビュー: 指定デザイン高さぶんだけ見せる（操作不可） */
+      var dh = parseInt(v.dataset.designH || '880', 10);
+      ifr.style.height = dh + 'px';
+      v.style.height = Math.round(dh * scale) + 'px';
+    } else {
+      /* 全ページ: 枠の実高さを保ち、iframe 内部をスクロールさせる */
+      var bh = parseInt(v.dataset.boxH || '680', 10);
+      v.style.height = bh + 'px';
+      ifr.style.height = Math.round(bh / scale) + 'px';
+    }
+  });
+}
+window.addEventListener('resize', fitFrames, {passive: true});
+window.addEventListener('load', fitFrames);
+fitFrames();
+</script>
+
+</body>
+</html>
