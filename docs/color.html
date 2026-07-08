@@ -38,6 +38,13 @@ section { padding:64px 0; border-bottom:1px solid var(--line); }
 .sec-lead { color:var(--gray); font-size:16px; margin-bottom:36px; max-width:760px; }
 
 /* STEP 1: pick main */
+.moods { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:30px; }
+.mood { display:flex; align-items:center; gap:8px; border:1px solid var(--line); background:#fff; padding:8px 14px; cursor:pointer; font-size:14px; font-weight:700; color:var(--ink); transition:border-color .12s, background .12s, color .12s; }
+.mood:hover { border-color:var(--ink); }
+.mood.on { background:var(--ink); color:#fff; border-color:var(--ink); }
+.mood .dot { width:14px; height:14px; border:1px solid rgba(0,0,0,.15); flex-shrink:0; }
+.mood.on .dot { border-color:rgba(255,255,255,.4); }
+.substep { font-size:12.5px; letter-spacing:.24em; font-weight:800; color:var(--faint); margin:0 0 12px; }
 .presets { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:28px; }
 .sw { width:46px; height:46px; border:1px solid rgba(0,0,0,.12); cursor:pointer; position:relative; transition:transform .12s; }
 .sw:hover { transform:translateY(-2px); }
@@ -125,8 +132,10 @@ footer a { color:var(--gray); }
 <section>
   <div class="wrap">
     <div class="label">STEP 1</div>
-    <h2 class="sec-h">メインカラーを選ぶ</h2>
-    <p class="sec-lead">ブランドの主役になる1色です。プリセットから選ぶか、カラーピッカー／HEXで指定します。</p>
+    <h2 class="sec-h">印象から選ぶ</h2>
+    <p class="sec-lead">「信頼」「親しみ」など、出したい印象を選ぶとメインカラーが決まります。色から直接選ぶこともできます。</p>
+    <div class="moods" id="moods"></div>
+    <div class="substep">または、色から選ぶ</div>
     <div class="presets" id="presets"></div>
     <div class="picker-row">
       <label for="cp">自由に選ぶ：</label>
@@ -237,6 +246,14 @@ var PRESETS=[
 ];
 
 /* ---------- 状態 ---------- */
+/* 印象ワード → メイン色（色彩心理ベース） */
+var MOODS=[
+  {t:'信頼・堅実',c:'#1f4e79'},{t:'清潔・さわやか',c:'#2b9cf0'},{t:'親しみ・あたたかい',c:'#ef7a45'},
+  {t:'元気・活発',c:'#f24d29'},{t:'楽しい・明るい',c:'#f5b301'},{t:'ナチュラル・やさしい',c:'#6f8f4e'},
+  {t:'落ち着き・大人',c:'#3a5145'},{t:'知的・クール',c:'#2f6f7a'},{t:'やわらか・かわいい',c:'#e07a97'},
+  {t:'上品・エレガント',c:'#7c5aa6'},{t:'高級・上質',c:'#5a2a3a'},{t:'情熱・力強い',c:'#c0392b'}
+];
+
 var state={ main:'#b04123', sub:'#1c2951', subKey:'tone', brand:'BRAND' };
 
 function setMain(hex){
@@ -246,6 +263,7 @@ function setMain(hex){
   document.getElementById('hex').value=hex.replace('#','').toUpperCase();
   // プリセットのon
   document.querySelectorAll('.sw').forEach(function(s){ s.classList.toggle('on', s.dataset.c.toLowerCase()===hex.toLowerCase()); });
+  document.querySelectorAll('.mood').forEach(function(el){ el.classList.toggle('on', el.dataset.c.toLowerCase()===hex.toLowerCase()); });
   var subs=suggestSubs(hex);
   // 現在のsubKeyのサブを再計算して採用（キー維持）
   var chosen=subs.find(function(x){return x.key===state.subKey;})||subs[0];
@@ -302,6 +320,10 @@ function copyCSS(){
 
 /* ---------- 初期化 ---------- */
 (function init(){
+  var mm=document.getElementById('moods');
+  mm.innerHTML=MOODS.map(function(x){ return '<div class="mood" data-c="'+x.c+'"><span class="dot" style="background:'+x.c+'"></span>'+x.t+'</div>'; }).join('');
+  mm.querySelectorAll('.mood').forEach(function(el){ el.addEventListener('click',function(){ setMain(el.dataset.c); }); });
+
   var p=document.getElementById('presets');
   p.innerHTML=PRESETS.map(function(x){ return '<div class="sw" title="'+x.n+'" data-c="'+x.c+'" style="background:'+x.c+'"></div>'; }).join('');
   p.querySelectorAll('.sw').forEach(function(s){ s.addEventListener('click',function(){ setMain(s.dataset.c); }); });

@@ -141,6 +141,13 @@ footer a { color: var(--gray); }
 .pk-pair .w .role { color: var(--faint); }
 .pk-pair .w .hx { color: var(--ink); }
 .pk-ratio { margin-top: 12px; font-size: 13px; color: var(--faint); }
+/* 印象で選ぶチップ */
+.pk-moods { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 30px; max-width: 940px; }
+.pk-mood { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: #fff; padding: 8px 14px; cursor: pointer; font-size: 14px; font-weight: 700; color: var(--ink); transition: border-color .12s, background .12s, color .12s; }
+.pk-mood:hover { border-color: var(--ink); }
+.pk-mood.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+.pk-mood .dot { width: 14px; height: 14px; border: 1px solid rgba(0,0,0,.15); flex-shrink: 0; }
+.pk-mood.on .dot { border-color: rgba(255,255,255,.4); }
 @media (max-width: 520px) { .pk-pair { grid-template-columns: 1fr; } }
 </style>
 </head>
@@ -197,9 +204,11 @@ footer a { color: var(--gray); }
 <section id="palette">
   <div class="wrap">
     <h2 class="sec-title">配色を選ぶ</h2>
-    <p class="sec-lead">メインを1色決めると、サブ候補と極薄背景を提案します。<b style="color:var(--ink)">選んだ配色は、下の AFTER にそのまま反映されます</b>（BEFORE は比較用に、AIの初期状態のまま固定）。</p>
+    <p class="sec-lead">「信頼」「親しみ」など<b style="color:var(--ink)">印象から選ぶ</b>と、メイン色・サブ・うっすら背景まで提案します（色から直接選ぶこともできます）。<b style="color:var(--ink)">選んだ配色は下の AFTER に反映されます</b>（BEFORE は比較用に固定）。</p>
 
-    <div class="pk-step">STEP 1 — メインカラー</div>
+    <div class="pk-step">STEP 1 — 印象から選ぶ</div>
+    <div class="pk-moods" id="pk-moods"></div>
+    <div class="pk-step" style="margin-top:8px;">または、色から選ぶ</div>
     <div class="pk-presets" id="pk-presets"></div>
     <div class="pk-row">
       <label for="pk-cp">自由に選ぶ：</label>
@@ -338,6 +347,14 @@ fitFrames();
     {n:'バイオレット',c:'#7c3aed'},{n:'サンイエロー',c:'#f5b301'}
   ];
 
+  /* 印象ワード → メイン色（色彩心理ベース） */
+  var MOODS=[
+    {t:'信頼・堅実',c:'#1f4e79'},{t:'清潔・さわやか',c:'#2b9cf0'},{t:'親しみ・あたたかい',c:'#ef7a45'},
+    {t:'元気・活発',c:'#f24d29'},{t:'楽しい・明るい',c:'#f5b301'},{t:'ナチュラル・やさしい',c:'#6f8f4e'},
+    {t:'落ち着き・大人',c:'#3a5145'},{t:'知的・クール',c:'#2f6f7a'},{t:'やわらか・かわいい',c:'#e07a97'},
+    {t:'上品・エレガント',c:'#7c5aa6'},{t:'高級・上質',c:'#5a2a3a'},{t:'情熱・力強い',c:'#c0392b'}
+  ];
+
   var state={main:'#d6455f',sub:'#6d2233',subKey:'tone'};
 
   function frames(){return [].slice.call(document.querySelectorAll('.viewport iframe'));}
@@ -373,6 +390,7 @@ fitFrames();
     document.getElementById('pk-cp').value=hex;
     document.getElementById('pk-hex').value=hex.replace('#','').toUpperCase();
     document.querySelectorAll('.pk-sw').forEach(function(s){s.classList.toggle('on',s.dataset.c.toLowerCase()===hex.toLowerCase());});
+    document.querySelectorAll('.pk-mood').forEach(function(el){el.classList.toggle('on',el.dataset.c.toLowerCase()===hex.toLowerCase());});
     var ss=subs(hex);
     var chosen=ss.filter(function(x){return x.key===state.subKey;})[0]||ss[0];
     state.sub=chosen.hex;
@@ -385,6 +403,10 @@ fitFrames();
     renderPair(); postAll();
   }
   window.__pkPickSub=pickSub;
+
+  var mm=document.getElementById('pk-moods');
+  mm.innerHTML=MOODS.map(function(x){return '<div class="pk-mood" data-c="'+x.c+'"><span class="dot" style="background:'+x.c+'"></span>'+x.t+'</div>';}).join('');
+  mm.querySelectorAll('.pk-mood').forEach(function(el){el.addEventListener('click',function(){setMain(el.dataset.c);});});
 
   var pr=document.getElementById('pk-presets');
   pr.innerHTML=PRESETS.map(function(x){return '<div class="pk-sw" title="'+x.n+'" data-c="'+x.c+'" style="background:'+x.c+'"></div>';}).join('');
