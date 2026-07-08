@@ -197,7 +197,7 @@ footer a { color: var(--gray); }
 <section id="palette">
   <div class="wrap">
     <h2 class="sec-title">配色を選ぶ</h2>
-    <p class="sec-lead">メインを1色決めると、サブ候補と極薄背景を提案します。<b style="color:var(--ink)">選んだ配色は、下の Before / After にそのまま反映されます。</b></p>
+    <p class="sec-lead">メインを1色決めると、サブ候補と極薄背景を提案します。<b style="color:var(--ink)">選んだ配色は、下の AFTER にそのまま反映されます</b>（BEFORE は比較用に、AIの初期状態のまま固定）。</p>
 
     <div class="pk-step">STEP 1 — メインカラー</div>
     <div class="pk-presets" id="pk-presets"></div>
@@ -218,7 +218,7 @@ footer a { color: var(--gray); }
 <section id="demo">
   <div class="wrap">
     <h2 class="sec-title">デスクトップ・ファーストビュー</h2>
-    <p class="sec-lead">グラデ丸ボタン＋角丸カード＋絵文字 → 大型タイポ＋アクセント下線＋テキストリンクCTA＋細罫のお知らせ枠。<b style="color:var(--ink)">上で選んだ配色が反映されます。</b></p>
+    <p class="sec-lead">グラデ丸ボタン＋角丸カード＋絵文字 → 大型タイポ＋アクセント下線＋テキストリンクCTA＋細罫のお知らせ枠。<b style="color:var(--ink)">上で選んだ配色は AFTER 側に反映されます。</b></p>
     <div class="duo">
       <div class="frame">
         <div class="frame-head"><span class="tag">BEFORE</span><span class="px">1440px</span></div>
@@ -327,23 +327,27 @@ fitFrames();
   function normalizeHex(h){if(!h)return null;h=h.trim().replace(/^#/,'');if(/^[0-9a-fA-F]{3}$/.test(h))h=h.split('').map(function(c){return c+c;}).join('');if(!/^[0-9a-fA-F]{6}$/.test(h))return null;return '#'+h.toLowerCase();}
 
   var PRESETS=[
+    /* 落ち着き系（ブランド実例） */
     {n:'コトホギ・ローズ',c:'#d6455f'},{n:'SHINTATSU RED',c:'#b04123'},{n:'信達紺',c:'#1c2951'},
     {n:'フォレスト',c:'#2f5d50'},{n:'ネイビー',c:'#26374d'},{n:'エメラルド',c:'#0f8a6a'},
     {n:'テラコッタ',c:'#c15b34'},{n:'マスタード',c:'#bd8a1e'},{n:'すみれ',c:'#5b4b8a'},
-    {n:'チャコール',c:'#33383d'},{n:'ワインレッド',c:'#7d2637'},{n:'ブルー',c:'#2563c9'}
+    {n:'チャコール',c:'#33383d'},{n:'ワインレッド',c:'#7d2637'},{n:'ブルー',c:'#2563c9'},
+    /* 明るい・鮮やか系 */
+    {n:'タンジェリン',c:'#f26419'},{n:'コーラル',c:'#ff5a5f'},{n:'ビビッドピンク',c:'#e4308a'},
+    {n:'スカイ',c:'#1e90e0'},{n:'ターコイズ',c:'#14b8bf'},{n:'フレッシュグリーン',c:'#22b04b'},
+    {n:'バイオレット',c:'#7c3aed'},{n:'サンイエロー',c:'#f5b301'}
   ];
 
   var state={main:'#d6455f',sub:'#6d2233',subKey:'tone'};
 
   function frames(){return [].slice.call(document.querySelectorAll('.viewport iframe'));}
   function postAll(){
-    var wash=washOf(state.main), hue=Math.round(hsl(state.main).h);
+    var wash=washOf(state.main);
     frames().forEach(function(f){
+      /* BEFORE は AI の初期状態のまま。AFTER にだけ反映する */
+      if((f.getAttribute('src')||'').indexOf('after')===-1) return;
       var w; try { w=f.contentWindow; } catch(e){ return; }
-      if(!w) return;
-      var isAfter=(f.getAttribute('src')||'').indexOf('after')!==-1;
-      if(isAfter) w.postMessage({type:'hdr-color',main:state.main,sub:state.sub,wash:wash},'*');
-      else        w.postMessage({type:'hdr-color',hue:hue},'*');
+      if(w) w.postMessage({type:'hdr-color',main:state.main,sub:state.sub,wash:wash},'*');
     });
   }
 
