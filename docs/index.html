@@ -141,13 +141,27 @@ footer a { color: var(--gray); }
 .pk-pair .w .role { color: var(--faint); }
 .pk-pair .w .hx { color: var(--ink); }
 .pk-ratio { margin-top: 12px; font-size: 13px; color: var(--faint); }
-/* 印象で選ぶチップ */
-.pk-moods { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 30px; max-width: 940px; }
+/* 印象で選ぶチップ（2軸マトリクス：あたたかい⇄つめたい × カジュアル⇄フォーマル） */
 .pk-mood { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: #fff; padding: 8px 14px; cursor: pointer; font-size: 14px; font-weight: 700; color: var(--ink); transition: border-color .12s, background .12s, color .12s; }
 .pk-mood:hover { border-color: var(--ink); }
 .pk-mood.on { background: var(--ink); color: #fff; border-color: var(--ink); }
 .pk-mood .dot { width: 14px; height: 14px; border: 1px solid rgba(0,0,0,.15); flex-shrink: 0; }
 .pk-mood.on .dot { border-color: rgba(255,255,255,.4); }
+.pk-matrix { display: grid; grid-template-columns: auto 1fr 1fr; border: 1px solid var(--line-strong); max-width: 940px; margin-bottom: 30px; }
+.mx-corner { border-bottom: 1px solid var(--line); }
+.mx-col { padding: 12px 10px; text-align: center; font-size: 12px; letter-spacing: .24em; font-weight: 800; color: var(--faint); border-left: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.mx-row { padding: 16px 14px; font-size: 12px; letter-spacing: .18em; font-weight: 800; color: var(--faint); display: flex; flex-direction: column; justify-content: center; gap: 2px; }
+.mx-row small { font-weight: 400; letter-spacing: .02em; font-size: 11px; }
+.mx-quad { border-left: 1px solid var(--line); padding: 16px; display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; }
+.mx-row.r2, .mx-quad.r2 { border-top: 1px solid var(--line); }
+.q-tag { display: none; }
+@media (max-width: 700px) {
+  .pk-matrix { grid-template-columns: 1fr; border: none; gap: 12px; }
+  .mx-corner, .mx-col, .mx-row { display: none; }
+  .mx-quad { border: 1px solid var(--line); }
+  .mx-quad.r2 { border-top: 1px solid var(--line); }
+  .q-tag { display: block; width: 100%; font-size: 11px; letter-spacing: .2em; font-weight: 800; color: var(--faint); margin-bottom: 4px; }
+}
 @media (max-width: 520px) { .pk-pair { grid-template-columns: 1fr; } }
 </style>
 </head>
@@ -207,7 +221,17 @@ footer a { color: var(--gray); }
     <p class="sec-lead">「信頼」「親しみ」など<b style="color:var(--ink)">印象から選ぶ</b>と、メイン色・サブ・うっすら背景まで提案します（色から直接選ぶこともできます）。<b style="color:var(--ink)">選んだ配色は下の AFTER に反映されます</b>（BEFORE は比較用に固定）。</p>
 
     <div class="pk-step">STEP 1 — 印象から選ぶ</div>
-    <div class="pk-moods" id="pk-moods"></div>
+    <div class="pk-matrix">
+      <div class="mx-corner"></div>
+      <div class="mx-col">あたたかい</div>
+      <div class="mx-col">つめたい</div>
+      <div class="mx-row">カジュアル<small>親しみやすく</small></div>
+      <div class="mx-quad" id="pk-q-wc"><div class="q-tag">あたたかい × カジュアル</div></div>
+      <div class="mx-quad" id="pk-q-cc"><div class="q-tag">つめたい × カジュアル</div></div>
+      <div class="mx-row r2">フォーマル<small>きちんと</small></div>
+      <div class="mx-quad r2" id="pk-q-wf"><div class="q-tag">あたたかい × フォーマル</div></div>
+      <div class="mx-quad r2" id="pk-q-cf"><div class="q-tag">つめたい × フォーマル</div></div>
+    </div>
     <div class="pk-step" style="margin-top:8px;">または、色から選ぶ</div>
     <div class="pk-presets" id="pk-presets"></div>
     <div class="pk-row">
@@ -347,12 +371,15 @@ fitFrames();
     {n:'バイオレット',c:'#7c3aed'},{n:'サンイエロー',c:'#f5b301'}
   ];
 
-  /* 印象ワード → メイン色（色彩心理ベース） */
+  /* 印象ワード → メイン色（色彩心理ベース）
+     q: 象限 = wc(暖×カジュアル) cc(冷×カジュアル) wf(暖×フォーマル) cf(冷×フォーマル) */
   var MOODS=[
-    {t:'信頼・堅実',c:'#1f4e79'},{t:'清潔・さわやか',c:'#2b9cf0'},{t:'親しみ・あたたかい',c:'#ef7a45'},
-    {t:'元気・活発',c:'#f24d29'},{t:'楽しい・明るい',c:'#f5b301'},{t:'ナチュラル・やさしい',c:'#6f8f4e'},
-    {t:'落ち着き・大人',c:'#3a5145'},{t:'知的・クール',c:'#2f6f7a'},{t:'やわらか・かわいい',c:'#e07a97'},
-    {t:'上品・エレガント',c:'#7c5aa6'},{t:'高級・上質',c:'#5a2a3a'},{t:'情熱・力強い',c:'#c0392b'}
+    {t:'親しみ・あたたかい',c:'#ef7a45',q:'wc'},{t:'元気・活発',c:'#f24d29',q:'wc'},
+    {t:'楽しい・明るい',c:'#f5b301',q:'wc'},{t:'やわらか・かわいい',c:'#e07a97',q:'wc'},
+    {t:'清潔・さわやか',c:'#2b9cf0',q:'cc'},{t:'ナチュラル・やさしい',c:'#6f8f4e',q:'cc'},
+    {t:'情熱・力強い',c:'#c0392b',q:'wf'},{t:'高級・上質',c:'#5a2a3a',q:'wf'},
+    {t:'信頼・堅実',c:'#1f4e79',q:'cf'},{t:'知的・クール',c:'#2f6f7a',q:'cf'},
+    {t:'落ち着き・大人',c:'#3a5145',q:'cf'},{t:'上品・エレガント',c:'#7c5aa6',q:'cf'}
   ];
 
   var state={main:'#d6455f',sub:'#6d2233',subKey:'tone'};
@@ -404,9 +431,14 @@ fitFrames();
   }
   window.__pkPickSub=pickSub;
 
-  var mm=document.getElementById('pk-moods');
-  mm.innerHTML=MOODS.map(function(x){return '<div class="pk-mood" data-c="'+x.c+'"><span class="dot" style="background:'+x.c+'"></span>'+x.t+'</div>';}).join('');
-  mm.querySelectorAll('.pk-mood').forEach(function(el){el.addEventListener('click',function(){setMain(el.dataset.c);});});
+  MOODS.forEach(function(x){
+    var quad=document.getElementById('pk-q-'+x.q); if(!quad) return;
+    var el=document.createElement('div');
+    el.className='pk-mood'; el.dataset.c=x.c;
+    el.innerHTML='<span class="dot" style="background:'+x.c+'"></span>'+x.t;
+    el.addEventListener('click',function(){setMain(x.c);});
+    quad.appendChild(el);
+  });
 
   var pr=document.getElementById('pk-presets');
   pr.innerHTML=PRESETS.map(function(x){return '<div class="pk-sw" title="'+x.n+'" data-c="'+x.c+'" style="background:'+x.c+'"></div>';}).join('');
