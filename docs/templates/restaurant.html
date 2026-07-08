@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- ============================================================
+     hanabi-design-rules — 業種別スターター：飲食店
+     使い方: テキストを差し替え、:root の --main/--sub/--wash を
+     ブランド色に変更（color.html で組み合わせを試せる）
+============================================================ -->
+<title>炉ばた 囲 — 札幌・すすきの</title>
+<style>
+:root {
+  --main:  #c15b34;  /* メイン：テラコッタ（親しみ×あたたかい） */
+  --sub:   #3a5145;  /* サブ：深緑（落ち着き） */
+  --wash:  #faf8f7;  /* メインの極薄ティント（交互背景） */
+  --ink: #141414; --gray: #6b6b6b; --faint: #9a9a9a;
+  --line: #e6e6e6; --line-strong: #111; --bg: #ffffff; --soft: #f6f6f6;
+  --accent: var(--main);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN",
+               "Hiragino Sans", "Noto Sans JP", Meiryo, sans-serif;
+  color: var(--ink); background: var(--bg);
+  font-size: 18px; line-height: 1.9;
+  font-feature-settings: "palt"; -webkit-font-smoothing: antialiased;
+}
+.wrap { width: 100%; padding: 0 clamp(28px, 6vw, 120px); }
+section { padding: 96px 0; border-bottom: 1px solid var(--line); }
+section:last-of-type { border-bottom: none; }
+section:nth-of-type(odd) { background: var(--wash); }
+@media (min-width: 900px) {
+  html { scroll-snap-type: y proximity; scroll-padding-top: 70px; }
+  .hero, section { scroll-snap-align: start; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-snap-type: none; scroll-behavior: auto; } }
+
+nav.top { position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,.9); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+nav.top .wrap { display: flex; align-items: center; justify-content: space-between; height: 70px; }
+nav.top .brand { font-weight: 700; letter-spacing: .18em; font-size: 17px; }
+nav.top .links { display: flex; gap: 26px; font-size: 15px; }
+nav.top .links a { color: var(--gray); text-decoration: none; }
+nav.top .links a:hover { color: var(--ink); }
+nav.top .links a.em { color: var(--ink); font-weight: 700; box-shadow: inset 0 -2px 0 var(--main); }
+@media (max-width: 720px) { nav.top .links { display: none; } }
+
+.hero { padding: 110px 0 100px; border-bottom: 1px solid var(--line); }
+.hero .cols { display: grid; grid-template-columns: 1.2fr 1fr; gap: clamp(40px, 5vw, 90px); align-items: center; }
+.hero .kicker { font-size: clamp(13px, 1vw, 17px); letter-spacing: .3em; color: var(--faint); font-weight: 700; margin-bottom: 34px; }
+.hero h1 { font-size: clamp(34px, 3.8vw, 78px); line-height: 1.3; font-weight: 800; letter-spacing: -.01em; }
+.hero h1 u { text-decoration: none; box-shadow: inset 0 -.22em 0 var(--main); }
+.hero .lead { margin-top: clamp(26px, 2.2vw, 42px); font-size: clamp(16px, 1.25vw, 21px); color: var(--gray); max-width: 720px; }
+.hero .cta { margin-top: 52px; display: flex; gap: 44px; flex-wrap: wrap; }
+.hero .cta a { color: var(--ink); text-decoration: none; font-weight: 800; font-size: clamp(17px, 1.3vw, 22px); box-shadow: inset 0 -2px 0 var(--ink); padding-bottom: 4px; }
+.hero .cta a:hover { box-shadow: inset 0 -2px 0 var(--main); }
+.hero .meta { margin-top: 46px; font-size: clamp(13px, 1vw, 16px); color: var(--faint); letter-spacing: .06em; }
+.info { border: 1px solid var(--line); background: var(--wash); }
+.info .row { padding: 18px 24px; border-bottom: 1px solid var(--line); display: flex; gap: 18px; }
+.info .row:last-child { border-bottom: none; }
+.info .row b { font-size: 12px; letter-spacing: .18em; color: var(--sub); font-weight: 800; flex-shrink: 0; width: 5.5em; padding-top: 3px; }
+.info .row span { font-size: 15px; color: #333; }
+@media (max-width: 900px) { .hero .cols { grid-template-columns: 1fr; } }
+
+.eyebrow { font-size: 14px; letter-spacing: .34em; color: var(--faint); font-weight: 700; text-transform: uppercase; margin-bottom: 24px; }
+.sec-title { font-size: clamp(30px, 3.4vw, 64px); font-weight: 800; line-height: 1.3; padding-left: 22px; position: relative; margin-bottom: 18px; }
+.sec-title::before { content: ""; position: absolute; left: 0; top: .16em; bottom: .16em; width: 8px; background: var(--main); }
+.lead-txt { color: var(--gray); font-size: clamp(16px, 1.25vw, 21px); margin-bottom: 54px; max-width: 900px; }
+
+.statement { min-height: 100vh; display: flex; align-items: center; }
+html.embed .statement { min-height: auto; padding: 92px 0; }
+.bigline { font-weight: 800; letter-spacing: -.02em; line-height: 1.3; font-size: clamp(30px, 5.2vw, 96px); }
+.bigline u { text-decoration: none; box-shadow: inset 0 -.18em 0 var(--main); }
+.kodawari { margin-top: clamp(40px, 4vw, 70px); border-top: 1px solid var(--line); max-width: 880px; }
+.kodawari div { border-bottom: 1px solid var(--line); padding: 22px 4px; font-size: clamp(16px, 1.3vw, 22px); color: #333; display: flex; gap: 18px; align-items: baseline; }
+.kodawari div b { color: var(--sub); font-size: .78em; letter-spacing: .16em; flex-shrink: 0; font-weight: 800; }
+@media (max-width: 720px) { .statement { min-height: 78vh; } }
+
+/* おしながき */
+.menu-list { border-top: 1px solid var(--line-strong); max-width: 900px; }
+.menu-list .mi { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; padding: 20px 4px; border-bottom: 1px solid var(--line); }
+.menu-list .mi .nm { font-size: clamp(17px, 1.4vw, 22px); font-weight: 800; }
+.menu-list .mi .nm small { display: block; font-size: 13px; color: var(--gray); font-weight: 400; margin-top: 2px; }
+.menu-list .mi .dots { flex: 1; border-bottom: 1px dotted var(--faint); transform: translateY(-6px); }
+.menu-list .mi .pr { font-size: clamp(16px, 1.3vw, 20px); font-weight: 800; white-space: nowrap; }
+.menu-list .mi .pr small { font-size: .7em; color: var(--gray); font-weight: 400; }
+.menu-note { margin-top: 22px; font-size: 14px; color: var(--faint); }
+
+/* コース */
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
+@media (max-width: 720px) { .grid3 { grid-template-columns: 1fr; } }
+.plan { border: 1px solid var(--line); padding: 40px 32px; display: flex; flex-direction: column; background: var(--bg); }
+.plan.em { border-color: var(--line-strong); border-width: 1.5px; box-shadow: inset 0 -6px 0 var(--main); }
+.plan .pname { font-size: 14px; letter-spacing: .22em; font-weight: 700; color: var(--sub); }
+.plan .price { font-size: clamp(32px, 2.6vw, 44px); font-weight: 800; margin: 14px 0 4px; }
+.plan .price small { font-size: .42em; color: var(--gray); font-weight: 400; }
+.plan p { font-size: 15.5px; color: var(--gray); margin-top: 12px; padding-top: 16px; border-top: 1px solid var(--line); flex: 1; }
+.plan a { margin-top: 26px; color: var(--ink); text-decoration: none; font-weight: 800; font-size: 16px; box-shadow: inset 0 -2px 0 var(--ink); align-self: flex-start; padding-bottom: 3px; }
+.plan a:hover { box-shadow: inset 0 -2px 0 var(--main); }
+
+/* 店舗情報 */
+.shop { display: grid; grid-template-columns: 260px 1fr; border-top: 1px solid var(--line); max-width: 900px; }
+.shop dt { padding: 20px 0; font-weight: 800; font-size: 16px; letter-spacing: .1em; border-bottom: 1px solid var(--line); color: var(--sub); }
+.shop dd { padding: 20px 0; color: #333; font-size: 17px; border-bottom: 1px solid var(--line); }
+@media (max-width: 720px) { .shop { grid-template-columns: 1fr; } .shop dt { border-bottom: none; padding-bottom: 2px; } }
+
+.close { text-align: center; padding: 140px 0; }
+html.embed .close { padding: 104px 0; }
+.close .eyebrow { text-align: center; }
+.close h2 { font-size: clamp(34px, 4.6vw, 92px); font-weight: 800; line-height: 1.35; }
+.close h2 u { text-decoration: none; box-shadow: inset 0 -.2em 0 var(--main); }
+.close p { color: var(--gray); margin-top: 30px; font-size: clamp(16px, 1.3vw, 21px); }
+.cta-line { margin-top: 64px; border: 1.5px solid var(--line-strong); max-width: 720px; margin-left: auto; margin-right: auto; padding: 44px 40px; background: var(--bg); }
+.cta-line .label { font-size: 13px; letter-spacing: .22em; font-weight: 800; color: var(--faint); margin-bottom: 18px; }
+.cta-line a { color: var(--ink); text-decoration: none; font-weight: 800; font-size: clamp(19px, 1.7vw, 27px); box-shadow: inset 0 -2px 0 var(--ink); padding-bottom: 4px; }
+.cta-line a:hover { box-shadow: inset 0 -2px 0 var(--main); }
+.cta-line .note { font-size: 15px; color: var(--gray); margin-top: 20px; }
+
+#progress { position: fixed; top: 0; left: 0; height: 3px; width: 100%; z-index: 60; background: var(--main); transform: scaleX(0); transform-origin: 0 50%; }
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); }
+.reveal.in { opacity: 1; transform: none; }
+.dots { position: fixed; right: clamp(12px, 1.5vw, 28px); top: 50%; transform: translateY(-50%); z-index: 60; display: flex; flex-direction: column; gap: 13px; }
+.dots a { position: relative; width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid var(--faint); display: block; transition: all .25s; }
+.dots a.on { background: var(--ink); border-color: var(--ink); transform: scale(1.35); }
+.dots a .lbl { position: absolute; right: 22px; top: 50%; transform: translateY(-50%); white-space: nowrap; font-size: 12.5px; font-weight: 700; color: var(--ink); background: #fff; border: 1px solid var(--line); padding: 4px 10px; opacity: 0; pointer-events: none; transition: opacity .2s; }
+.dots a:hover .lbl, .dots a.on .lbl { opacity: 1; }
+@media (max-width: 900px) { .dots { display: none; } }
+footer { padding: 40px 0; text-align: center; color: var(--faint); font-size: 12px; letter-spacing: .12em; }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<nav id="dots" class="dots" aria-label="セクション一覧"></nav>
+
+<nav class="top">
+  <div class="wrap">
+    <div class="brand">炉ばた 囲</div>
+    <div class="links">
+      <a href="#kodawari">こだわり</a>
+      <a href="#menu">おしながき</a>
+      <a href="#course">コース</a>
+      <a href="#shop">店舗情報</a>
+      <a class="em" href="#reserve">ご予約</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="hero" data-label="トップ">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <div class="kicker">炉ばた焼 — 札幌・すすきの</div>
+        <h1>今日の魚は、<br><u>今朝の浜のもの。</u></h1>
+        <p class="lead">小樽と積丹の朝獲れを、その日のうちに炭火へ。囲炉裏を囲んで、大将の手元を眺めながら。派手なことは何もしない、まっすぐな炉ばた焼の店です。</p>
+        <div class="cta">
+          <a href="#reserve">ご予約 →</a>
+          <a href="#menu">おしながきを見る →</a>
+        </div>
+        <div class="meta">17:00–23:00 ／ 日曜定休 ／ カウンター12席・小上がり2卓</div>
+      </div>
+      <div class="info">
+        <div class="row"><b>本日の魚</b><span>積丹産 真ほっけ ／ 小樽産 にしん ／ 噴火湾 ほたて</span></div>
+        <div class="row"><b>お通し</b><span>季節の小鉢三種（本日は 行者にんにく醤油漬け ほか）</span></div>
+        <div class="row"><b>ご予約</b><span>本日カウンターに空きあり（2名様まで）</span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="statement" id="kodawari" data-label="こだわり">
+  <div class="wrap">
+    <h2 class="bigline">うまいものを、<br><u>うまいうちに。</u></h2>
+    <div class="kodawari">
+      <div><b>魚</b>毎朝、大将が小樽の市場で目利き。仕入れがない日は、その品を出しません</div>
+      <div><b>炭</b>岩手の切炭だけを使い、遠火の強火でじっくり。皮はぱりっと、身はふっくら</div>
+      <div><b>酒</b>北海道の地酒を中心に常時20種。魚に合わせて大将がお選びします</div>
+    </div>
+  </div>
+</section>
+
+<section id="menu" data-label="おしながき">
+  <div class="wrap">
+    <div class="eyebrow">01 — Menu</div>
+    <h2 class="sec-title">おしながき</h2>
+    <p class="lead-txt">仕入れで変わる本日のおすすめは、店内の黒板でご案内します。</p>
+    <div class="menu-list">
+      <div class="mi"><div class="nm">真ほっけの炉ばた焼<small>積丹産・脂ののった大ぶりを一枚まるごと</small></div><div class="dots"></div><div class="pr">¥1,680</div></div>
+      <div class="mi"><div class="nm">にしんの塩焼き<small>小樽産・数の子入りは出会えたら幸運</small></div><div class="dots"></div><div class="pr">¥1,280</div></div>
+      <div class="mi"><div class="nm">ほたての浜焼き<small>噴火湾産・バター醤油か塩で</small></div><div class="dots"></div><div class="pr">¥880<small>／枚</small></div></div>
+      <div class="mi"><div class="nm">じゃがバター いかの塩辛のせ<small>ニセコ産きたあかり</small></div><div class="dots"></div><div class="pr">¥580</div></div>
+      <div class="mi"><div class="nm">大将の焼きおにぎり<small>〆にどうぞ・自家製みそ</small></div><div class="dots"></div><div class="pr">¥380</div></div>
+    </div>
+    <p class="menu-note">価格はすべて税込です。仕入れ状況により内容・価格が変わることがあります。</p>
+  </div>
+</section>
+
+<section id="course" data-label="コース">
+  <div class="wrap">
+    <div class="eyebrow">02 — Course</div>
+    <h2 class="sec-title">コース</h2>
+    <p class="lead-txt">迷ったら「おまかせ」を。その日いちばんの魚を、いちばんいい焼き方で。</p>
+    <div class="grid3">
+      <div class="plan">
+        <div class="pname">気軽に</div>
+        <div class="price">¥3,800<small> /人</small></div>
+        <p>お通し・焼き物3品・〆の焼きおにぎり。まず囲の味を知りたい方に。</p>
+        <a href="#reserve">このコースで予約 →</a>
+      </div>
+      <div class="plan em">
+        <div class="pname">おまかせ</div>
+        <div class="price">¥5,800<small> /人</small></div>
+        <p>その日の浜まかせ全7品。大将との会話も含めて囲のいちばん人気です。</p>
+        <a href="#reserve">このコースで予約 →</a>
+      </div>
+      <div class="plan">
+        <div class="pname">宴会</div>
+        <div class="price">¥5,000<small> /人〜</small></div>
+        <p>飲み放題付き・小上がり貸切（8名様まで）。ご予算に合わせます。</p>
+        <a href="#reserve">相談して予約 →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="shop" data-label="店舗情報">
+  <div class="wrap">
+    <div class="eyebrow">03 — Access</div>
+    <h2 class="sec-title">店舗情報</h2>
+    <dl class="shop">
+      <dt>住所</dt><dd>札幌市中央区南5条西4丁目 ○○ビル 1F（すすきの駅 徒歩3分）</dd>
+      <dt>営業時間</dt><dd>17:00–23:00（L.O. 22:15）</dd>
+      <dt>定休日</dt><dd>日曜・年末年始</dd>
+      <dt>席数</dt><dd>カウンター12席 ／ 小上がり2卓（各4名様）</dd>
+      <dt>お支払い</dt><dd>現金・各種カード・二次元コード決済</dd>
+      <dt>電話</dt><dd>011-000-0000（15時以降つながりやすいです）</dd>
+    </dl>
+  </div>
+</section>
+
+<section id="reserve" class="close" data-label="ご予約">
+  <div class="wrap">
+    <div class="eyebrow">Reservation</div>
+    <h2>今夜の一席、<br><u>囲っておきます。</u></h2>
+    <p>カウンターはその日の魚の話をしながら。<br>小上がりはご家族・ご宴会でゆっくりと。</p>
+    <div class="cta-line">
+      <div class="label">ご予約</div>
+      <a href="#">電話で予約する（011-000-0000） →</a>
+      <p class="note">LINEでのご予約も承ります。当日のお席はお電話が確実です。</p>
+    </div>
+  </div>
+</section>
+
+<footer>炉ばた 囲 — 札幌・すすきの</footer>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if (location.search.indexOf('embed') !== -1) document.documentElement.classList.add('embed');
+  var bar = document.getElementById('progress');
+  if (bar && !reduce) {
+    window.addEventListener('scroll', function(){
+      var h = document.documentElement;
+      var p = h.scrollHeight - h.clientHeight > 0 ? h.scrollTop / (h.scrollHeight - h.clientHeight) : 0;
+      bar.style.transform = 'scaleX(' + p + ')';
+    }, {passive: true});
+  }
+  if (!reduce && 'IntersectionObserver' in window) {
+    var targets = [];
+    document.querySelectorAll('section').forEach(function(sec){
+      var w = sec.querySelector('.wrap'); if (!w) return;
+      [].forEach.call(w.children, function(el){ targets.push(el); });
+    });
+    targets.forEach(function(el){ el.classList.add('reveal'); });
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold: 0.12, rootMargin: '0px 0px -8% 0px'});
+    targets.forEach(function(el){ io.observe(el); });
+  }
+  var dotsWrap = document.getElementById('dots');
+  if (dotsWrap) {
+    var secs = [].slice.call(document.querySelectorAll('header.hero,section'));
+    var links = [];
+    secs.forEach(function(sec, i){
+      if (!sec.id) sec.id = 'sec-' + i;
+      var label = sec.getAttribute('data-label') || sec.id;
+      var a = document.createElement('a');
+      a.href = '#' + sec.id;
+      a.innerHTML = '<span class="lbl">' + label + '</span>';
+      dotsWrap.appendChild(a);
+      links.push({a: a, sec: sec});
+    });
+    function setActive(){
+      var mid = (window.scrollY || window.pageYOffset) + window.innerHeight * .4;
+      var cur = 0;
+      for (var i = 0; i < links.length; i++) { if (links[i].sec.offsetTop <= mid) cur = i; }
+      links.forEach(function(l, i){ l.a.classList.toggle('on', i === cur); });
+    }
+    window.addEventListener('scroll', setActive, {passive: true});
+    setActive();
+  }
+})();
+</script>
+
+</body>
+</html>

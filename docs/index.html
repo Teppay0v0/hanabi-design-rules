@@ -105,6 +105,15 @@ section:last-of-type { border-bottom: none; }
 }
 .viewport.static iframe { pointer-events: none; }
 .hint { margin-top: 18px; font-size: 13.5px; color: var(--faint); }
+.hint a { color: var(--gray); }
+
+/* テンプレート集 */
+.tpl-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: clamp(14px, 2vw, 28px); }
+@media (max-width: 960px) { .tpl-grid { grid-template-columns: 1fr; } }
+.tpl-foot { display: flex; justify-content: space-between; align-items: center; padding: 14px 22px; border-top: 1px solid var(--line); font-size: 13px; }
+.tpl-foot span { color: var(--faint); }
+.tpl-foot a { color: var(--ink); font-weight: 800; text-decoration: none; box-shadow: inset 0 -2px 0 var(--ink); padding-bottom: 2px; }
+.tpl-foot a:hover { box-shadow: inset 0 -2px 0 var(--accent); }
 
 footer { padding: 52px 0; text-align: center; color: var(--faint); font-size: 13px; letter-spacing: .08em; }
 footer a { color: var(--gray); }
@@ -173,6 +182,7 @@ footer a { color: var(--gray); }
     <h1>hanabi-<br><u>design-rules</u></h1>
     <p class="lead">Claude Code でデザインを作るとき「なんかAIっぽい」「詰まってる」「カラフルすぎる」を防ぐスキルです。インストールしておくだけで、LP・HP・スライドの出力が変わります。根本の考え方は、引くこと。</p>
     <div class="links">
+      <a href="#templates">テンプレート集 →</a>
       <a href="#palette">配色を選ぶ →</a>
       <a href="#install">ワンコマンドでインストール →</a>
       <a href="#demo">Before / After を見る →</a>
@@ -288,6 +298,37 @@ footer a { color: var(--gray); }
       </div>
     </div>
     <p class="hint">各ページを単体で開く： <a href="before.html" style="color:var(--gray);">BEFORE</a> ／ <a href="after.html" style="color:var(--gray);">AFTER</a></p>
+  </div>
+</section>
+
+<section id="templates">
+  <div class="wrap">
+    <h2 class="sec-title">テンプレート集（業種別スターター）</h2>
+    <p class="sec-lead">スキルに同梱。Claude Code に<b style="color:var(--ink)">「居酒屋のLP作って」と業種を伝えるだけ</b>で、該当スターターをベースに構成・文体まで整った状態から始まります。業種が当てはまらないときは汎用スターターが使われます。</p>
+    <div class="tpl-grid">
+      <div class="frame">
+        <div class="frame-head"><span class="tag" style="color:var(--ink);">飲食店</span><span class="px">lp-restaurant.html</span></div>
+        <div class="viewport static" data-mode="fv" data-design-h="820">
+          <iframe src="templates/restaurant.html" loading="lazy" scrolling="no" title="飲食店テンプレート"></iframe>
+        </div>
+        <div class="tpl-foot"><span>テラコッタ × 深緑</span><a href="templates/restaurant.html">単体で開く →</a></div>
+      </div>
+      <div class="frame">
+        <div class="frame-head"><span class="tag" style="color:var(--ink);">美容室・サロン</span><span class="px">lp-salon.html</span></div>
+        <div class="viewport static" data-mode="fv" data-design-h="820">
+          <iframe src="templates/salon.html" loading="lazy" scrolling="no" title="美容室・サロンテンプレート"></iframe>
+        </div>
+        <div class="tpl-foot"><span>ローズ × 深ローズ茶</span><a href="templates/salon.html">単体で開く →</a></div>
+      </div>
+      <div class="frame">
+        <div class="frame-head"><span class="tag" style="color:var(--ink);">士業・コンサル</span><span class="px">lp-professional.html</span></div>
+        <div class="viewport static" data-mode="fv" data-design-h="820">
+          <iframe src="templates/professional.html" loading="lazy" scrolling="no" title="士業・コンサルテンプレート"></iframe>
+        </div>
+        <div class="tpl-foot"><span>紺 × マスタード</span><a href="templates/professional.html">単体で開く →</a></div>
+      </div>
+    </div>
+    <p class="hint">テンプレートは今後も増えます。「この業種がほしい」はリポジトリの Issue でどうぞ。</p>
   </div>
 </section>
 
