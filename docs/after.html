@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>マカセテ — LINE問い合わせ対応サービス（AFTER）</title>
+<title>コトホギ — 誕生日ギフトコンシェルジュ（AFTER）</title>
 <style>
 /* =============================================
    AFTER — hanabi-design-rules 適用
@@ -16,7 +16,7 @@
   --faint:       #9a9a9a;
   --line:        #e6e6e6;
   --line-strong: #111;
-  --accent:      #06c755;
+  --accent:      #d6455f;
   --bg:          #ffffff;
   --soft:        #f6f6f6;
 }
@@ -105,12 +105,16 @@ nav.top .links a.em { color: var(--ink); font-weight: 700; box-shadow: inset 0 -
 .hero .cta a small { font-weight: 400; }
 .hero .meta { margin-top: 46px; font-size: clamp(13px, 1vw, 16px); color: var(--faint); letter-spacing: .06em; }
 
-/* chat mock（細罫・直角） */
-.chat { border: 1px solid var(--line); padding: 30px 26px; }
-.chat .chat-title { text-align: center; font-size: 12px; color: var(--faint); letter-spacing: .1em; margin-bottom: 18px; }
-.bubble { max-width: 80%; padding: 9px 14px; font-size: 13px; line-height: 1.7; margin-bottom: 12px; }
-.bubble.user { background: var(--accent); color: #fff; margin-left: auto; }
-.bubble.bot { border: 1px solid var(--line); color: var(--ink); }
+/* リマインド枠（細罫・直角） */
+.notice { border: 1px solid var(--line); }
+.notice .nt { font-size: 12px; color: var(--faint); letter-spacing: .18em; padding: 18px 24px 14px; border-bottom: 1px solid var(--line); }
+.notice .row { padding: 20px 24px; border-bottom: 1px solid var(--line); }
+.notice .row:last-child { border-bottom: none; }
+.notice .row .d { font-size: 12px; letter-spacing: .16em; color: var(--accent); font-weight: 700; }
+.notice .row .n { font-size: 19px; font-weight: 800; margin-top: 4px; }
+.notice .row .s { font-size: 14px; color: var(--gray); margin-top: 2px; }
+.notice .row .pick { display: inline-block; margin-top: 8px; font-size: 14px; font-weight: 800; color: var(--ink); text-decoration: none; box-shadow: inset 0 -2px 0 var(--ink); padding-bottom: 2px; }
+.notice .row .pick:hover { box-shadow: inset 0 -2px 0 var(--accent); }
 @media (max-width: 900px) { .hero .cols { grid-template-columns: 1fr; } }
 
 /* 見出し共通 */
@@ -217,7 +221,7 @@ nav.top .links a.em { color: var(--ink); font-weight: 700; box-shadow: inset 0 -
 }
 .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); }
 .reveal.in { opacity: 1; transform: none; }
-.hero .kicker, .hero h1, .hero .lead, .hero .cta, .hero .meta, .hero .chat {
+.hero .kicker, .hero h1, .hero .lead, .hero .cta, .hero .meta, .hero .notice {
   opacity: 0; transform: translateY(20px);
   animation: heroIn .9s cubic-bezier(.2,.7,.2,1) forwards;
 }
@@ -225,12 +229,12 @@ nav.top .links a.em { color: var(--ink); font-weight: 700; box-shadow: inset 0 -
 .hero .lead { animation-delay: .26s; }
 .hero .cta { animation-delay: .38s; }
 .hero .meta { animation-delay: .48s; }
-.hero .chat { animation-delay: .3s; }
+.hero .notice { animation-delay: .3s; }
 @keyframes heroIn { to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) {
   #progress { display: none; }
   .reveal, .reveal.in { opacity: 1 !important; transform: none !important; transition: none !important; }
-  .hero .kicker, .hero h1, .hero .lead, .hero .cta, .hero .meta, .hero .chat { animation: none !important; opacity: 1 !important; transform: none !important; }
+  .hero .kicker, .hero h1, .hero .lead, .hero .cta, .hero .meta, .hero .notice { animation: none !important; opacity: 1 !important; transform: none !important; }
 }
 
 footer { padding: 40px 0; text-align: center; color: var(--faint); font-size: 12px; letter-spacing: .12em; }
@@ -243,13 +247,13 @@ footer { padding: 40px 0; text-align: center; color: var(--faint); font-size: 12
 
 <nav class="top">
   <div class="wrap">
-    <div class="brand">マカセテ</div>
+    <div class="brand">コトホギ</div>
     <div class="links">
       <a href="#how">仕組み</a>
       <a href="#price">料金</a>
-      <a href="#flow">導入の流れ</a>
+      <a href="#flow">はじめ方</a>
       <a href="#faq">FAQ</a>
-      <a class="em" href="#contact">LINEで相談する</a>
+      <a class="em" href="#contact">無料で登録する</a>
     </div>
   </div>
 </nav>
@@ -258,21 +262,29 @@ footer { padding: 40px 0; text-align: center; color: var(--faint); font-size: 12
   <div class="wrap">
     <div class="cols">
       <div>
-        <div class="kicker">LINE問い合わせ対応サービス — MAKASETE</div>
-        <h1>お客様にちゃんと<br>返したいから、<br><u>返せるところは任せる。</u></h1>
-        <p class="lead">マカセテは、LINEに届くよくある質問へ24時間応答し、判断が必要な相談だけ人につなぐサービスです。お客様を待たせず、経営者・店長・オーナーが見るべき相談に集中できる形をつくります。</p>
+        <div class="kicker">誕生日ギフトコンシェルジュ — KOTOHOGI</div>
+        <h1>「おめでとう」を、<br><u>いつも間に合わせる。</u></h1>
+        <p class="lead">コトホギは、大切な人の誕生日を前もってお知らせし、その人に合った贈り物を選んでお届けするサービスです。「気づいたら過ぎていた」を、なくします。</p>
         <div class="cta">
-          <a href="#contact">LINEで体験・相談する <small>→</small></a>
-          <a href="#price">料金を見る <small>→</small></a>
+          <a href="#contact">無料で登録する <small>→</small></a>
+          <a href="#price">プランを見る <small>→</small></a>
         </div>
-        <div class="meta">月 ¥10,000〜 ／ 最短 2週間から ／ 既存LINE公式アカウント対応</div>
+        <div class="meta">月 ¥1,980〜 ／ 全国配送対応 ／ 登録は3分</div>
       </div>
-      <div class="chat">
-        <div class="chat-title">宿泊・記念日のご相談</div>
-        <div class="bubble user">来月22日、母の古希祝いで利用したいです</div>
-        <div class="bubble bot">ありがとうございます。ご利用人数は何名様でしょうか？</div>
-        <div class="bubble user">家族で5名、祖母は車椅子です</div>
-        <div class="bubble bot">バリアフリーのお部屋でご案内できます。お食事のご希望は？</div>
+      <div class="notice">
+        <div class="nt">今週のお知らせ</div>
+        <div class="row">
+          <div class="d">あと10日</div>
+          <div class="n">お母さまの誕生日</div>
+          <div class="s">今年のおすすめ：名入れの湯呑み（ペア）</div>
+          <a class="pick" href="#">候補を見る →</a>
+        </div>
+        <div class="row">
+          <div class="d">あと24日</div>
+          <div class="n">高橋さんの誕生日</div>
+          <div class="s">昨年：ハンドクリームのセット</div>
+          <a class="pick" href="#">候補を見る →</a>
+        </div>
       </div>
     </div>
   </div>
@@ -280,11 +292,11 @@ footer { padding: 40px 0; text-align: center; color: var(--faint); font-size: 12
 
 <section class="statement" id="pain" data-label="課題">
   <div class="wrap">
-    <h2 class="bigline">全部、あなたが<br><u>返さなくてもいい。</u></h2>
+    <h2 class="bigline">覚えていたのに、<br><u>間に合わなかった。</u></h2>
     <div class="pains">
-      <div><b>01</b>営業時間や料金など、同じ質問に何度も返している</div>
-      <div><b>02</b>接客中・施術中・移動中も、LINEの通知が気になる</div>
-      <div><b>03</b>返信が遅れて、予約や注文を逃した気がする</div>
+      <div><b>01</b>気づいたときには、もう当日を過ぎていた</div>
+      <div><b>02</b>毎年「何を贈ろう」で悩んで、結局いつも同じ</div>
+      <div><b>03</b>忙しくて、選ぶ時間も買いに行く時間もない</div>
     </div>
   </div>
 </section>
@@ -292,23 +304,23 @@ footer { padding: 40px 0; text-align: center; color: var(--faint); font-size: 12
 <section id="how" data-label="仕組み">
   <div class="wrap">
     <div class="eyebrow">01 — How it works</div>
-    <h2 class="sec-title">マカセテの仕組み</h2>
-    <p class="lead-txt">よくある質問はその場で、大事な相談はあなたへ。役割を分けるだけで、返信の負担は変わります。</p>
+    <h2 class="sec-title">コトホギの仕組み</h2>
+    <p class="lead-txt">忘れず、迷わず、間に合う。贈り物の「めんどう」を、3つに分けて引き受けます。</p>
     <div class="grid3">
       <div class="card">
         <div class="num">01</div>
-        <h3>24時間すぐ返す</h3>
-        <p>よくある質問には、AIが24時間365日その場で応答。お客様を待たせません。</p>
+        <h3>忘れずお知らせ</h3>
+        <p>登録した記念日の3週間前に、余裕をもってお知らせします。当日に慌てません。</p>
       </div>
       <div class="card">
         <div class="num">02</div>
-        <h3>大事な相談は人へ</h3>
-        <p>判断が必要な相談・クレーム・特別な要望は、すぐあなたのLINEへつなぎます。</p>
+        <h3>その人に選ぶ</h3>
+        <p>相手の好み・関係性・予算から、毎年かぶらない贈り物をご提案します。</p>
       </div>
       <div class="card">
         <div class="num">03</div>
-        <h3>育てて賢くなる</h3>
-        <p>実際のやり取りから回答を改善。使うほどお店に合った返答になります。</p>
+        <h3>包んで届ける</h3>
+        <p>メッセージカードを添えて、当日に間に合うようお届けします。</p>
       </div>
     </div>
   </div>
@@ -318,55 +330,55 @@ footer { padding: 40px 0; text-align: center; color: var(--faint); font-size: 12
   <div class="wrap">
     <div class="eyebrow">02 — Pricing</div>
     <h2 class="sec-title">料金</h2>
-    <p class="lead-txt">初期費用なし。すべてのプランに、導入時の回答設計を含みます。</p>
+    <p class="lead-txt">初期費用なし。まずはお知らせと提案だけ、から始められます。</p>
     <div class="grid3">
       <div class="plan">
         <div class="pname">ライト</div>
-        <div class="price">¥10,000<small> /月</small></div>
-        <p>よくある質問への自動応答のみ。まず試したい方に。</p>
-        <a href="#contact">このプランで相談する →</a>
+        <div class="price">¥1,980<small> /月</small></div>
+        <p>記念日のお知らせと、ギフトのご提案まで。自分で選んで贈りたい方に。</p>
+        <a href="#contact">このプランで登録する →</a>
       </div>
       <div class="plan em">
         <div class="pname">スタンダード</div>
-        <div class="price">¥30,000<small> /月</small></div>
-        <p>自動応答＋人への引き継ぎ＋月次の回答チューニング。いちばん選ばれています。</p>
-        <a href="#contact">このプランで相談する →</a>
+        <div class="price">¥4,980<small> /月</small></div>
+        <p>お知らせ＋提案＋選定・配送まで。年3回分のギフト手配込み。いちばん選ばれています。</p>
+        <a href="#contact">このプランで登録する →</a>
       </div>
       <div class="plan">
-        <div class="pname">プロ</div>
-        <div class="price">¥50,000<small> /月</small></div>
-        <p>多店舗・多業務対応。予約・注文システムとの連携も。</p>
-        <a href="#contact">このプランで相談する →</a>
+        <div class="pname">プレミアム</div>
+        <div class="price">¥9,800<small> /月</small></div>
+        <p>年間何度でも。ラッピング指定・当日配送・お花の同送まで。</p>
+        <a href="#contact">このプランで登録する →</a>
       </div>
     </div>
   </div>
 </section>
 
-<section id="flow" data-label="導入の流れ">
+<section id="flow" data-label="はじめ方">
   <div class="wrap">
     <div class="eyebrow">03 — Flow</div>
-    <h2 class="sec-title">導入の流れ</h2>
-    <p class="lead-txt">最短2週間で本稼働。既存のLINE公式アカウントをそのまま使えます。</p>
+    <h2 class="sec-title">はじめ方</h2>
+    <p class="lead-txt">登録は3分。あとは、お知らせが届くのを待つだけです。</p>
     <div class="loop">
       <div class="step lit">
         <div class="step-no">STEP 1</div>
-        <b>LINEで相談</b>
-        <small>その日のうちに</small>
-        <p>まずマカセテを体験。よくある質問の洗い出しもこの場で始まります。</p>
+        <b>記念日を登録</b>
+        <small>3分</small>
+        <p>贈りたい相手と誕生日、好みや予算を登録します。何人でも登録できます。</p>
       </div>
       <div class="ar">→</div>
       <div class="step">
         <div class="step-no">STEP 2</div>
-        <b>設計・学習</b>
-        <small>約2週間</small>
-        <p>お店の回答を一緒に設計し、AIに学習させます。確認はすべてLINE上で。</p>
+        <b>提案を受け取る</b>
+        <small>3週間前</small>
+        <p>その人に合ったギフト候補が届きます。あなたは選ぶだけ。</p>
       </div>
       <div class="ar">→</div>
       <div class="step">
         <div class="step-no">STEP 3</div>
-        <b>運用開始</b>
-        <small>月次で改善</small>
-        <p>本稼働後も、実際のやり取りを見ながら毎月回答を育てていきます。</p>
+        <b>当日に届く</b>
+        <small>お任せ</small>
+        <p>ラッピングとカードを添えて、当日までにお届けします。</p>
       </div>
     </div>
   </div>
@@ -375,19 +387,19 @@ footer { padding: 40px 0; text-align: center; color: var(--faint); font-size: 12
 <section id="faq" data-label="FAQ">
   <div class="wrap">
     <div class="eyebrow">04 — FAQ</div>
-    <h2 class="sec-title">気になることは、<br>マカセテに聞いてみてください。</h2>
-    <p class="lead-txt">押すとLINEが開き、質問テキストが自動でコピーされます。貼り付けて送信するだけで、マカセテがその場でお答えします。</p>
+    <h2 class="sec-title">気になることは、<br>登録の前にどうぞ。</h2>
+    <p class="lead-txt">よくいただくご質問をまとめました。ここにない疑問は、登録後いつでもご相談いただけます。</p>
     <div class="faq-grid">
-      <a href="#">Q. AIが変な返答をしないか心配です<span>→</span></a>
-      <a href="#">Q. 他社のチャットボットと何が違いますか？<span>→</span></a>
-      <a href="#">Q. LINEで友だち追加すると、営業電話は来ますか？<span>→</span></a>
-      <a href="#">Q. 月1万円（ライト）で、どこまで対応できますか？<span>→</span></a>
-      <a href="#">Q. 誤った返答をした場合は？<span>→</span></a>
-      <a href="#">Q. 多店舗・多業務でも使えますか？<span>→</span></a>
-      <a href="#">Q. 本稼働まで、どのくらいかかりますか？<span>→</span></a>
-      <a href="#">Q. 途中で解約したくなったら？<span>→</span></a>
-      <a href="#">Q. AI利用料は別途かかりますか？<span>→</span></a>
-      <a href="#">Q. 既存のLINE公式アカウントで使えますか？<span>→</span></a>
+      <a href="#">Q. どんな相手にも合う提案ができますか？<span>→</span></a>
+      <a href="#">Q. 予算は自分で決められますか？<span>→</span></a>
+      <a href="#">Q. 相手にサービス経由だと分かってしまいますか？<span>→</span></a>
+      <a href="#">Q. 誕生日以外の記念日も登録できますか？<span>→</span></a>
+      <a href="#">Q. 提案されたギフトが気に入らなかったら？<span>→</span></a>
+      <a href="#">Q. ラッピングやメッセージカードは選べますか？<span>→</span></a>
+      <a href="#">Q. 当日までに間に合わないことはありますか？<span>→</span></a>
+      <a href="#">Q. 途中で解約できますか？<span>→</span></a>
+      <a href="#">Q. 配送料は別途かかりますか？<span>→</span></a>
+      <a href="#">Q. 海外へのお届けはできますか？<span>→</span></a>
     </div>
     <p class="faq-more"><a href="#">回答も読みたい方はこちら（FAQ一覧） →</a></p>
   </div>
@@ -396,17 +408,17 @@ footer { padding: 40px 0; text-align: center; color: var(--faint); font-size: 12
 <section id="contact" class="close" data-label="お問い合わせ">
   <div class="wrap">
     <div class="eyebrow">Contact</div>
-    <h2>その仕事、<br><u>マカセテください。</u></h2>
-    <p>まずは、マカセテを体験してみてください。<br>導入のご相談も、その流れでそのままどうぞ。</p>
+    <h2>「おめでとう」を、<br><u>今年こそ間に合わせる。</u></h2>
+    <p>まずは大切な人を、ひとり登録してみてください。<br>お知らせが届くところから、始まります。</p>
     <div class="cta-line">
-      <div class="label">お問い合わせ</div>
-      <a href="#">LINEで無料相談する →</a>
-      <p class="note">友だち追加後、営業のご連絡は一切しません。</p>
+      <div class="label">無料ではじめる</div>
+      <a href="#">大切な人を登録する →</a>
+      <p class="note">登録後、しつこい営業のご連絡は一切しません。</p>
     </div>
   </div>
 </section>
 
-<footer>MAKASETE — LINE問い合わせ対応サービス</footer>
+<footer>KOTOHOGI — 誕生日ギフトコンシェルジュ</footer>
 
 <script>
 (function(){
