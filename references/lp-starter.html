@@ -36,7 +36,7 @@
     font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN",
                  "Hiragino Sans", "Noto Sans JP", Meiryo, sans-serif;
     color: var(--ink);
-    background: var(--wash);
+    background: var(--bg);
     font-size: 20px;
     line-height: 1.9;
     font-feature-settings: "palt";
@@ -49,6 +49,8 @@
   /* ---- セクション区切り ---- */
   section { padding: 96px 0; border-bottom: 1px solid var(--line); }
   section:last-of-type { border-bottom: none; }
+  /* 背景はベース白。セクションを 白 → wash → 白… と交互に塗り分ける */
+  section:nth-of-type(odd) { background: var(--wash); }
 
   /* ---- スナップスクロール（PC / プロジェクター） ---- */
   @media (min-width: 900px) {
