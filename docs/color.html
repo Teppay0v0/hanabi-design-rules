@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>カラーを選ぶ — hanabi-design-rules</title>
+<meta name="description" content="メインカラーを1色決めると、サブカラー候補と極薄背景を自動で提案。2色配色を試せるツール。">
+<style>
+:root {
+  --ink:#141414; --gray:#6b6b6b; --faint:#9a9a9a;
+  --line:#e6e6e6; --line-strong:#111; --bg:#ffffff; --soft:#f6f6f6;
+  --tool:#141414; /* このツール自身のアクセント（中立） */
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:"Helvetica Neue",Arial,"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;
+  color:var(--ink); background:var(--bg); font-size:17px; line-height:1.85;
+  font-feature-settings:"palt"; -webkit-font-smoothing:antialiased;
+}
+.wrap { max-width:1180px; margin:0 auto; padding:0 clamp(24px,4vw,56px); }
+
+/* header */
+.top { border-bottom:1px solid var(--line); padding:80px 0 56px; }
+.top .back { font-size:14px; color:var(--gray); text-decoration:none; box-shadow:inset 0 -1px 0 var(--line); }
+.top .back:hover { color:var(--ink); box-shadow:inset 0 -1px 0 var(--ink); }
+.top .kicker { font-size:13px; letter-spacing:.3em; color:var(--faint); font-weight:700; margin:34px 0 22px; }
+.top h1 { font-size:clamp(30px,4.4vw,60px); font-weight:800; letter-spacing:-.01em; line-height:1.2; }
+.top h1 u { text-decoration:none; box-shadow:inset 0 -.16em 0 var(--pick-main,#b04123); transition:box-shadow .3s; }
+.top p { margin-top:26px; font-size:clamp(15px,1.2vw,19px); color:var(--gray); max-width:720px; }
+
+/* section frame */
+section { padding:64px 0; border-bottom:1px solid var(--line); }
+.label { font-size:12.5px; letter-spacing:.24em; font-weight:800; color:var(--faint); margin-bottom:8px; }
+.sec-h { font-size:clamp(22px,2.2vw,34px); font-weight:800; letter-spacing:-.005em; margin-bottom:8px;
+  padding-left:18px; position:relative; }
+.sec-h::before { content:""; position:absolute; left:0; top:.18em; bottom:.18em; width:6px; background:var(--pick-main,#b04123); transition:background .3s; }
+.sec-lead { color:var(--gray); font-size:16px; margin-bottom:36px; max-width:760px; }
+
+/* STEP 1: pick main */
+.presets { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:28px; }
+.sw { width:46px; height:46px; border:1px solid rgba(0,0,0,.12); cursor:pointer; position:relative; transition:transform .12s; }
+.sw:hover { transform:translateY(-2px); }
+.sw.on { outline:2px solid var(--ink); outline-offset:2px; }
+.picker-row { display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
+.picker-row label { font-size:14px; color:var(--gray); font-weight:700; }
+.picker-row input[type=color] { width:52px; height:40px; border:1px solid var(--line); background:none; cursor:pointer; padding:2px; }
+.hexbox { display:flex; align-items:center; border:1px solid var(--line-strong); }
+.hexbox span { padding:9px 12px; color:var(--faint); font-family:"SF Mono",Menlo,monospace; font-size:14px; border-right:1px solid var(--line); }
+.hexbox input { border:none; padding:9px 12px; font-family:"SF Mono",Menlo,monospace; font-size:14px; width:110px; text-transform:uppercase; outline:none; color:var(--ink); }
+
+/* STEP 2: sub suggestions */
+.subs { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+@media (max-width:820px){ .subs { grid-template-columns:1fr 1fr; } }
+@media (max-width:480px){ .subs { grid-template-columns:1fr; } }
+.subcard { border:1px solid var(--line); cursor:pointer; transition:border-color .12s; background:var(--bg); }
+.subcard:hover { border-color:var(--ink); }
+.subcard.on { border-color:var(--line-strong); border-width:1.5px; box-shadow:inset 0 -5px 0 var(--pick-sub,#1c2951); }
+.subcard .chip { height:88px; }
+.subcard .body { padding:16px 16px 20px; }
+.subcard .ttl { font-size:15px; font-weight:800; display:flex; align-items:center; gap:8px; }
+.subcard .rec { font-size:10.5px; font-weight:800; letter-spacing:.08em; color:#fff; background:var(--ink); padding:2px 7px; }
+.subcard .desc { font-size:13px; color:var(--gray); margin-top:6px; line-height:1.7; }
+.subcard .hex { font-family:"SF Mono",Menlo,monospace; font-size:12.5px; color:var(--faint); margin-top:10px; letter-spacing:.04em; }
+
+/* pair strip */
+.pairstrip { display:grid; grid-template-columns:2fr 1fr 3fr; border:1px solid var(--line-strong); margin-top:8px; }
+.pairstrip > div { padding:20px 22px; }
+.pairstrip .m { color:#fff; }
+.pairstrip .s { color:#fff; }
+.pairstrip .w { background:var(--pick-wash,#faf2ef); }
+.pairstrip .role { font-size:11px; letter-spacing:.16em; font-weight:800; opacity:.8; }
+.pairstrip .nm { font-size:16px; font-weight:800; margin-top:2px; }
+.pairstrip .hx { font-family:"SF Mono",Menlo,monospace; font-size:12.5px; margin-top:6px; opacity:.85; }
+.pairstrip .w .role, .pairstrip .w .nm, .pairstrip .w .hx { color:var(--ink); opacity:1; }
+.pairstrip .w .role { color:var(--faint); }
+.ratio { margin-top:10px; font-size:13px; color:var(--faint); }
+@media (max-width:620px){ .pairstrip { grid-template-columns:1fr; } }
+
+/* live preview mini-LP */
+.previewbox { border:1px solid var(--line); }
+.previewbox .bar { display:flex; justify-content:space-between; align-items:center; padding:12px 18px; border-bottom:1px solid var(--line); }
+.previewbox .bar .t { font-size:12px; letter-spacing:.2em; color:var(--faint); font-weight:700; }
+.pv { background:var(--pick-wash,#faf2ef); padding:clamp(26px,4vw,52px); transition:background .3s; }
+.pv .pnav { display:flex; justify-content:space-between; align-items:center; background:#fff; border:1px solid var(--line); padding:12px 18px; margin-bottom:28px; }
+.pv .pnav b { font-weight:800; font-size:14px; letter-spacing:.08em; }
+.pv .pnav .lk { font-size:12.5px; color:var(--ink); font-weight:700; box-shadow:inset 0 -2px 0 var(--pick-main,#b04123); }
+.pv .pk { font-size:11px; letter-spacing:.28em; color:var(--faint); font-weight:700; }
+.pv h2 { font-size:clamp(24px,3.6vw,44px); font-weight:800; letter-spacing:-.01em; line-height:1.25; margin-top:14px; }
+.pv h2 u { text-decoration:none; box-shadow:inset 0 -.16em 0 var(--pick-main,#b04123); }
+.pv .lead { color:var(--gray); font-size:15px; margin-top:16px; max-width:560px; }
+.pv .row { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:30px; }
+@media (max-width:560px){ .pv .row { grid-template-columns:1fr; } }
+.pv .card { background:#fff; border:1px solid var(--line); padding:22px 20px; }
+.pv .card .no { font-size:12px; letter-spacing:.18em; font-weight:800; color:var(--pick-sub,#1c2951); }
+.pv .card h3 { font-size:18px; font-weight:800; margin:8px 0 6px; }
+.pv .card p { font-size:13.5px; color:#444; }
+.pv .cta { margin-top:30px; }
+.pv .cta a { font-weight:800; color:var(--ink); font-size:16px; box-shadow:inset 0 -2px 0 var(--ink); padding-bottom:3px; text-decoration:none; }
+.pv .cta a:hover { box-shadow:inset 0 -2px 0 var(--pick-main,#b04123); }
+
+/* code */
+.codebox { border:1px solid var(--line-strong); }
+.codebox .chead { display:flex; justify-content:space-between; align-items:center; padding:12px 18px; border-bottom:1px solid var(--line); background:var(--soft); }
+.codebox .chead span { font-size:12px; letter-spacing:.2em; font-weight:800; color:var(--faint); }
+.codebox .chead button { border:1px solid var(--line-strong); background:var(--ink); color:#fff; font-family:inherit; font-size:12px; font-weight:800; letter-spacing:.1em; padding:6px 16px; cursor:pointer; }
+.codebox .chead button.done { background:var(--pick-main,#b04123); border-color:var(--pick-main,#b04123); }
+.codebox pre { padding:22px 20px; overflow-x:auto; font-family:"SF Mono",SFMono-Regular,Menlo,Consolas,monospace; font-size:13.5px; line-height:1.75; color:var(--ink); }
+
+footer { padding:52px 0; color:var(--faint); font-size:13px; letter-spacing:.06em; }
+footer a { color:var(--gray); }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="back" href="./">← hanabi-design-rules に戻る</a>
+    <div class="kicker">COLOR — メイン＋サブの2色配色</div>
+    <h1>1色決めれば、<br><u>サブは提案できる。</u></h1>
+    <p>hanabi-design-rules は配色を「メイン1色＋サブ1色」で組みます。メインカラーを選ぶと、サブカラーの候補と、背景に敷くメインの極薄ティントを自動で提案します。迷ったら、おすすめのサブから。</p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="label">STEP 1</div>
+    <h2 class="sec-h">メインカラーを選ぶ</h2>
+    <p class="sec-lead">ブランドの主役になる1色です。プリセットから選ぶか、カラーピッカー／HEXで指定します。</p>
+    <div class="presets" id="presets"></div>
+    <div class="picker-row">
+      <label for="cp">自由に選ぶ：</label>
+      <input type="color" id="cp" value="#b04123">
+      <div class="hexbox"><span>#</span><input type="text" id="hex" value="B04123" maxlength="6" spellcheck="false"></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="label">STEP 2</div>
+    <h2 class="sec-h">サブカラーの提案</h2>
+    <p class="sec-lead">狙いの空気感で選び方が変わります。カードを押すと、そのサブが下のプレビューに反映されます。</p>
+    <div class="subs" id="subs"></div>
+    <div class="pairstrip" id="pairstrip"></div>
+    <div class="ratio">面積比の目安 &nbsp;—&nbsp; 白＋wash 約70% ／ メイン 約25% ／ サブ 約5%</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="label">PREVIEW</div>
+    <h2 class="sec-h">この2色でどう見えるか</h2>
+    <p class="sec-lead">背景＝メインの極薄ティント、見出し下線＝メイン、ステップ番号＝サブ。要素は白で浮かせます。</p>
+    <div class="previewbox">
+      <div class="bar"><span class="t">LIVE PREVIEW</span></div>
+      <div class="pv">
+        <div class="pnav"><b id="pv-brand">BRAND</b><span class="lk">お問い合わせ</span></div>
+        <div class="pk">SERVICE — サービス名</div>
+        <h2>引くほどに、<u>伝わるもの</u>がある。</h2>
+        <p class="lead">白を基本に、メインを1色。サブは脇役として温度感だけ足す。詰め込まないから、見る人が迷いません。</p>
+        <div class="row">
+          <div class="card"><div class="no">01</div><h3>まとまり</h3><p>メインで統一感をつくる。土台になる色です。</p></div>
+          <div class="card"><div class="no">02</div><h3>温度感</h3><p>サブで空気を足す。主張はさせず、脇に置きます。</p></div>
+        </div>
+        <div class="cta"><a href="#">くわしく見る →</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="label">COPY</div>
+    <h2 class="sec-h">この配色を書き出す</h2>
+    <p class="sec-lead">lp-starter.html の <code style="font-size:.9em;">:root</code> にそのまま貼れます。変えるのはこの3変数だけ。</p>
+    <div class="codebox">
+      <div class="chead"><span>:root（抜粋）</span><button id="copy-css" onclick="copyCSS()">COPY</button></div>
+      <pre id="css-out"></pre>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    配色の考え方は <a href="https://www.design-get.com/color-2/">design-get.com「2色の配色」</a> を参照 ／ <a href="./">hanabi-design-rules</a>
+  </div>
+</footer>
+
+<script>
+/* ---------- 色変換 ---------- */
+function hexToRgb(h){ h=h.replace('#',''); if(h.length===3) h=h.split('').map(c=>c+c).join(''); var n=parseInt(h,16); return {r:(n>>16)&255,g:(n>>8)&255,b:n&255}; }
+function rgbToHex(r,g,b){ return '#'+[r,g,b].map(x=>Math.round(Math.max(0,Math.min(255,x))).toString(16).padStart(2,'0')).join(''); }
+function rgbToHsl(r,g,b){ r/=255;g/=255;b/=255; var mx=Math.max(r,g,b),mn=Math.min(r,g,b),h,s,l=(mx+mn)/2;
+  if(mx===mn){h=s=0;} else { var d=mx-mn; s=l>.5?d/(2-mx-mn):d/(mx+mn);
+    switch(mx){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;default:h=(r-g)/d+4;} h/=6; }
+  return {h:h*360,s:s*100,l:l*100}; }
+function hslToHex(h,s,l){ h=((h%360)+360)%360; s=Math.max(0,Math.min(100,s))/100; l=Math.max(0,Math.min(100,l))/100;
+  var c=(1-Math.abs(2*l-1))*s, x=c*(1-Math.abs((h/60)%2-1)), m=l-c/2, r=0,g=0,b=0;
+  if(h<60){r=c;g=x;} else if(h<120){r=x;g=c;} else if(h<180){g=c;b=x;} else if(h<240){g=x;b=c;} else if(h<300){r=x;b=c;} else {r=c;b=x;}
+  return rgbToHex((r+m)*255,(g+m)*255,(b+m)*255); }
+function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
+
+/* ---------- サブ提案ロジック ---------- */
+function suggestSubs(mainHex){
+  var m=rgbToHsl.apply(null,Object.values(hexToRgb(mainHex))); // {h,s,l}
+  var h=m.h, s=m.s, l=m.l;
+  return [
+    { key:'tone', name:'同系のトーン違い', rec:true,
+      desc:'同じ色相を深く／濃く。まとまりが出て、いちばん外さない。',
+      hex: hslToHex(h, clamp(s,42,74), clamp(l*0.52,15,30)) },
+    { key:'analog', name:'類似色', rec:false,
+      desc:'色相環で隣の色。やわらかく調和する。',
+      hex: hslToHex(h+32, clamp(s*0.9,38,72), clamp(l,32,50)) },
+    { key:'contrast', name:'寒暖の対照', rec:false,
+      desc:'反対側の色を落ち着かせて。知的さに温かさ（または逆）を足す。',
+      hex: hslToHex(h+180, clamp(s*0.72,34,66), clamp(l,32,48)) },
+    { key:'pop', name:'華やかな差し色', rec:false,
+      desc:'離れた色を鮮やかに。上品ななかに活発さを。',
+      hex: hslToHex(h+150, clamp(s*1.05,58,86), clamp(l*1.15,48,62)) }
+  ];
+}
+function washOf(mainHex){
+  var m=rgbToHsl.apply(null,Object.values(hexToRgb(mainHex)));
+  return hslToHex(m.h, clamp(m.s,14,24), 96.2);
+}
+
+/* ---------- プリセット ---------- */
+var PRESETS=[
+  {n:'SHINTATSU RED',c:'#b04123'},{n:'信達紺',c:'#1c2951'},{n:'コトホギ・ローズ',c:'#d6455f'},
+  {n:'フォレスト',c:'#2f5d50'},{n:'ネイビー',c:'#26374d'},{n:'エメラルド',c:'#0f8a6a'},
+  {n:'テラコッタ',c:'#c15b34'},{n:'マスタード',c:'#bd8a1e'},{n:'すみれ',c:'#5b4b8a'},
+  {n:'チャコール',c:'#33383d'},{n:'ワインレッド',c:'#7d2637'},{n:'HANABI 黄',c:'#e0b400'}
+];
+
+/* ---------- 状態 ---------- */
+var state={ main:'#b04123', sub:'#1c2951', subKey:'tone', brand:'BRAND' };
+
+function setMain(hex){
+  hex=normalizeHex(hex); if(!hex) return;
+  state.main=hex;
+  document.getElementById('cp').value=hex;
+  document.getElementById('hex').value=hex.replace('#','').toUpperCase();
+  // プリセットのon
+  document.querySelectorAll('.sw').forEach(function(s){ s.classList.toggle('on', s.dataset.c.toLowerCase()===hex.toLowerCase()); });
+  var subs=suggestSubs(hex);
+  // 現在のsubKeyのサブを再計算して採用（キー維持）
+  var chosen=subs.find(function(x){return x.key===state.subKey;})||subs[0];
+  state.sub=chosen.hex;
+  renderSubs(subs);
+  apply();
+}
+function pickSub(key){
+  var subs=suggestSubs(state.main);
+  var c=subs.find(function(x){return x.key===key;}); if(!c) return;
+  state.subKey=key; state.sub=c.hex;
+  document.querySelectorAll('.subcard').forEach(function(el){ el.classList.toggle('on', el.dataset.key===key); });
+  apply();
+}
+function normalizeHex(h){ if(!h) return null; h=h.trim().replace(/^#/,''); if(/^[0-9a-fA-F]{3}$/.test(h)) h=h.split('').map(c=>c+c).join(''); if(!/^[0-9a-fA-F]{6}$/.test(h)) return null; return '#'+h.toLowerCase(); }
+
+function renderSubs(subs){
+  var wrap=document.getElementById('subs');
+  wrap.innerHTML=subs.map(function(x){
+    return '<div class="subcard'+(x.key===state.subKey?' on':'')+'" data-key="'+x.key+'" onclick="pickSub(\''+x.key+'\')">'
+      +'<div class="chip" style="background:'+x.hex+'"></div>'
+      +'<div class="body"><div class="ttl">'+x.name+(x.rec?' <span class="rec">おすすめ</span>':'')+'</div>'
+      +'<div class="desc">'+x.desc+'</div><div class="hex">'+x.hex.toUpperCase()+'</div></div></div>';
+  }).join('');
+}
+
+function apply(){
+  var wash=washOf(state.main);
+  var r=document.documentElement.style;
+  r.setProperty('--pick-main',state.main);
+  r.setProperty('--pick-sub',state.sub);
+  r.setProperty('--pick-wash',wash);
+  // pair strip
+  document.getElementById('pairstrip').innerHTML=
+    '<div class="m" style="background:'+state.main+'"><div class="role">MAIN</div><div class="nm">メイン</div><div class="hx">'+state.main.toUpperCase()+'</div></div>'
+   +'<div class="s" style="background:'+state.sub+'"><div class="role">SUB</div><div class="nm">サブ</div><div class="hx">'+state.sub.toUpperCase()+'</div></div>'
+   +'<div class="w"><div class="role">WASH（背景）</div><div class="nm">極薄ティント</div><div class="hx">'+wash.toUpperCase()+'</div></div>';
+  // code
+  document.getElementById('css-out').textContent=
+    ':root {\n'
+   +'  --main:  '+state.main.toUpperCase()+';  /* メインカラー */\n'
+   +'  --sub:   '+state.sub.toUpperCase()+';  /* サブカラー */\n'
+   +'  --wash:  '+wash.toUpperCase()+';  /* 背景の極薄ティント */\n'
+   +'  --accent: var(--main); /* 後方互換 */\n'
+   +'}';
+}
+
+function copyCSS(){
+  var t=document.getElementById('css-out').textContent, b=document.getElementById('copy-css');
+  var done=function(){ b.textContent='COPIED'; b.classList.add('done'); setTimeout(function(){b.textContent='COPY'; b.classList.remove('done');},1600); };
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(done); }
+  else { var ta=document.createElement('textarea'); ta.value=t; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); }
+}
+
+/* ---------- 初期化 ---------- */
+(function init(){
+  var p=document.getElementById('presets');
+  p.innerHTML=PRESETS.map(function(x){ return '<div class="sw" title="'+x.n+'" data-c="'+x.c+'" style="background:'+x.c+'"></div>'; }).join('');
+  p.querySelectorAll('.sw').forEach(function(s){ s.addEventListener('click',function(){ setMain(s.dataset.c); }); });
+  document.getElementById('cp').addEventListener('input',function(e){ setMain(e.target.value); });
+  document.getElementById('hex').addEventListener('input',function(e){ var h=normalizeHex(e.target.value); if(h) setMain(h); });
+  setMain('#b04123');
+})();
+</script>
+
+</body>
+</html>

@@ -14,14 +14,20 @@
   ============================================================ */
 
   :root {
+    /* ▼ この3つだけ案件のブランド色に変える（他は触らない） ▼
+       メイン→サブ→wash の組み合わせは color.html で試せる */
+    --main:        #b04123; /* メインカラー：ブランドの主役 */
+    --sub:         #1c2951; /* サブカラー：脇役。メインより控えめに */
+    --wash:        #faf2ef; /* メインの極薄ティント：ページ背景 */
+
     --ink:         #141414;
     --gray:        #6b6b6b;
     --faint:       #9a9a9a;
     --line:        #e6e6e6;
     --line-strong: #111;
-    --accent:      #ffe600; /* ← ここだけ案件ブランド色に変更する */
     --bg:          #ffffff;
     --soft:        #f6f6f6;
+    --accent:      var(--main); /* 後方互換エイリアス */
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -30,7 +36,7 @@
     font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN",
                  "Hiragino Sans", "Noto Sans JP", Meiryo, sans-serif;
     color: var(--ink);
-    background: var(--bg);
+    background: var(--wash);
     font-size: 20px;
     line-height: 1.9;
     font-feature-settings: "palt";
@@ -171,7 +177,7 @@
   .g2 { grid-template-columns: 1fr 1fr; }
   .g3 { grid-template-columns: 1fr 1fr 1fr; }
   @media (max-width: 720px) { .g2, .g3 { grid-template-columns: 1fr; } }
-  .card { border: 1px solid var(--line); padding: 28px 26px; }
+  .card { border: 1px solid var(--line); padding: 28px 26px; background: var(--bg); }
   .card.em { border-color: var(--line-strong); border-width: 1.5px; }
   .card .num { font-size: 14px; color: var(--faint); letter-spacing: .2em; font-weight: 700; }
   .card h3 { font-size: 26px; font-weight: 800; margin: 8px 0; }
@@ -199,7 +205,8 @@
   /* ---- ステッパー（3ステップ） ---- */
   .loop { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: stretch; gap: 14px; }
   .loop .step { border: 1px solid var(--line); padding: 34px 30px; display: flex; flex-direction: column; }
-  .loop .step .step-no { font-size: 15px; letter-spacing: .18em; font-weight: 700; color: var(--faint); margin-bottom: 18px; }
+  .loop .step { background: var(--bg); }
+  .loop .step .step-no { font-size: 15px; letter-spacing: .18em; font-weight: 700; color: var(--sub); margin-bottom: 18px; }
   .loop .step b { font-size: clamp(30px, 2.4vw, 44px); font-weight: 800; display: block; line-height: 1.2; }
   .loop .step small { font-size: 17px; color: var(--faint); display: block; margin-top: 4px; }
   .loop .step p { font-size: 19px; line-height: 1.7; color: var(--gray); margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
